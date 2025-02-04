@@ -38,7 +38,7 @@ public class UserSettingsController : ControllerBase
 
         var userSettingsDto = await _service.GetUserSettingsByIdAsync(id);
         
-        if (userSettingsDto is null) return NotFound($"Settings for user '{id}' not found");
+        if (userSettingsDto is null) return NotFound($"Configurations for user '{id}' not found");
         
         return Ok(_mapper.Map<UserSettingsModel>(userSettingsDto));
     }

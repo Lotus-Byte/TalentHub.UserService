@@ -1,5 +1,5 @@
+using TalentHub.UserService.Infrastructure.Abstractions;
 using TalentHub.UserService.Infrastructure.Data;
-using TalentHub.UserService.Infrastructure.Interfaces;
 using TalentHub.UserService.Infrastructure.Models;
 
 namespace TalentHub.UserService.Infrastructure.Repositories;

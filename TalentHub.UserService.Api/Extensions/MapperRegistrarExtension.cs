@@ -13,16 +13,16 @@ public static class MapperRegistrarExtension
                 new MapperConfiguration(cfg =>
                 {
                     cfg.AddProfile<PersonMappingProfile>();
-                    cfg.AddProfile<global::TalentHub.UserService.Application.Mapping.PersonMappingProfile>();
+                    cfg.AddProfile<TalentHub.UserService.Application.Mapping.PersonMappingProfile>();
 
                     cfg.AddProfile<StaffMappingProfile>();
-                    cfg.AddProfile<global::TalentHub.UserService.Application.Mapping.StaffMappingProfile>();
+                    cfg.AddProfile<TalentHub.UserService.Application.Mapping.StaffMappingProfile>();
 
                     cfg.AddProfile<EmployerMappingProfile>();
-                    cfg.AddProfile<global::TalentHub.UserService.Application.Mapping.EmployerMappingProfile>();
+                    cfg.AddProfile<TalentHub.UserService.Application.Mapping.EmployerMappingProfile>();
 
                     cfg.AddProfile<UserSettingsMappingProfile>();
-                    cfg.AddProfile<global::TalentHub.UserService.Application.Mapping.UserSettingsMappingProfile>();
+                    cfg.AddProfile<TalentHub.UserService.Application.Mapping.UserSettingsMappingProfile>();
                 })));
         
         return services;

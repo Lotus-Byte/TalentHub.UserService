@@ -4,12 +4,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using TalentHub.UserService.Api.Configurations;
 using TalentHub.UserService.Api.Extensions;
-using TalentHub.UserService.Api.Settings;
 using TalentHub.UserService.Application.Interfaces;
 using TalentHub.UserService.Application.Services;
+using TalentHub.UserService.Infrastructure.Abstractions;
 using TalentHub.UserService.Infrastructure.Data;
-using TalentHub.UserService.Infrastructure.Interfaces;
 using TalentHub.UserService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,12 +17,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
 builder.Configuration.AddJsonFile("appsettings.json");
 
-builder.Services.AddOptions<ApplicationSettings>()
-    .BindConfiguration(nameof(ApplicationSettings));
+builder.Services.AddOptions<ApplicationConfiguration>()
+    .BindConfiguration(nameof(ApplicationConfiguration));
 
 builder.Services.AddDbContext<UserDbContext>((sp, options) =>
 {
-    var settings = sp.GetRequiredService<IOptions<ApplicationSettings>>();
+    var settings = sp.GetRequiredService<IOptions<ApplicationConfiguration>>();
     options.EnableSensitiveDataLogging();
     options.UseNpgsql(settings.Value.ConnectionString);
 });

@@ -1,7 +1,7 @@
 using AutoMapper;
 using TalentHub.UserService.Application.DTO.Staff;
 using TalentHub.UserService.Application.Interfaces;
-using TalentHub.UserService.Infrastructure.Interfaces;
+using TalentHub.UserService.Infrastructure.Abstractions;
 using TalentHub.UserService.Infrastructure.Models;
 
 namespace TalentHub.UserService.Application.Services;

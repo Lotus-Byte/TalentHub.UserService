@@ -39,7 +39,7 @@ public class UserDbContext : DbContext
         // Настройка связи один-к-одному между User и UserSettings
         modelBuilder.Entity<User>()
             .HasOne(u => u.UserSettings)
-            .WithOne(us => us.User)
+            .WithOne() //us => us.User
             .HasForeignKey<UserSettings>(us => us.UserId);
 
         // Настройка таблицы UserSettings
