@@ -1,8 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TalentHub.UserService.Api.Models.UserSettings;
+using TalentHub.UserService.Application.Abstractions;
 using TalentHub.UserService.Application.DTO.UserSettings;
-using TalentHub.UserService.Application.Interfaces;
 
 namespace TalentHub.UserService.Api.Controllers;
 

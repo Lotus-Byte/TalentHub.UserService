@@ -1,8 +1,10 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using TalentHub.UserService.Api.Abstractions;
 using TalentHub.UserService.Api.Models.Employer;
+using TalentHub.UserService.Api.Models.Notification;
+using TalentHub.UserService.Application.Abstractions;
 using TalentHub.UserService.Application.DTO.Employer;
-using TalentHub.UserService.Application.Interfaces;
 
 namespace TalentHub.UserService.Api.Controllers;
 
@@ -11,11 +13,13 @@ namespace TalentHub.UserService.Api.Controllers;
 public class EmployerController : ControllerBase
 {
     private readonly IMapper _mapper;
+    private readonly INotificationProducer _producer;
     private readonly IEmployerService _service;
     
-    public EmployerController(IMapper mapper, IEmployerService service)
+    public EmployerController(IMapper mapper, INotificationProducer producer, IEmployerService service)
     {
         _mapper = mapper;
+        _producer = producer;
         _service = service;
     }
     
@@ -27,8 +31,15 @@ public class EmployerController : ControllerBase
         var user = _mapper.Map<CreateEmployerDto>(createEmployerModel);
         
         if (user is null) return BadRequest("Incorrect data");
-            
-        return Ok(await _service.CreateEmployerAsync(user));
+
+        var result = await _service.CreateEmployerAsync(user);
+
+        _producer.SendAsync(new NotificationMessageModel
+        {
+            // TODO: CREATE NEW MQ MESSAGE
+        });
+        
+        return Ok(result);
     }
     
     [HttpGet("{id:guid}")]

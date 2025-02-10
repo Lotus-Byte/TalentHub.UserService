@@ -7,6 +7,5 @@ public class UpdateUserSettingsModel
     [Required]
     public Guid UserId { get; set; }
     
-    public bool NotifyViaPush { get; set; }
-    public bool NotifyViaEmail { get; set; }
+    public UserNotificationSettingsModel NotificationSettings { get; set; }
 }

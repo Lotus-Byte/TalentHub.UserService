@@ -1,6 +1,6 @@
 using AutoMapper;
+using TalentHub.UserService.Application.Abstractions;
 using TalentHub.UserService.Application.DTO.UserSettings;
-using TalentHub.UserService.Application.Interfaces;
 using TalentHub.UserService.Infrastructure.Abstractions;
 using TalentHub.UserService.Infrastructure.Models;
 
@@ -8,20 +8,20 @@ namespace TalentHub.UserService.Application.Services;
 
 public class UserSettingsService : IUserSettingsService
 {
-    private readonly IMapper _mapper;
     private readonly IUserSettingsRepository _repository;
+    private readonly IMapper _mapper;
 
-    public UserSettingsService(IMapper mapper, IUserSettingsRepository repository)
+    public UserSettingsService(IUserSettingsRepository repository, IMapper mapper)
     {
-        _mapper = mapper;
         _repository = repository;
+        _mapper = mapper;
     }
     
     public async Task<Guid> CreateUserSettingsAsync(CreateUserSettingsDto createUserSettingsDto)
     {
-        var user = _mapper.Map<CreateUserSettingsDto, UserSettings>(createUserSettingsDto); 
+        var userSettings = _mapper.Map<CreateUserSettingsDto, UserSettings>(createUserSettingsDto); 
         
-        var createdUserSettings = await _repository.AddUserSettingsAsync(user);
+        var createdUserSettings = await _repository.AddUserSettingsAsync(userSettings);
         
         return createdUserSettings.UserId;
     }

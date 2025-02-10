@@ -23,5 +23,15 @@ public class UserSettingsMappingProfile : Profile
             .ForMember(d => d.Created, map => map.Ignore())
             .ForMember(d => d.Updated, map => map.Ignore())
             .ForMember(d => d.Deleted, map => map.Ignore());
+        
+        CreateMap<UserNotificationSettingsDto, UserNotificationSettings>()
+            .ForMember(dest => dest.Email, opt => 
+                opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.Push, opt => 
+                opt.MapFrom(src => src.Push));
+
+        CreateMap<EmailNotificationSettingsDto, EmailNotificationSettings>();
+        
+        CreateMap<PushNotificationSettingsDto, PushNotificationSettings>();
     }
 }

@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TalentHub.UserService.Api.Controllers;
 using TalentHub.UserService.Api.Models.Person;
+using TalentHub.UserService.Application.Abstractions;
 using TalentHub.UserService.Application.DTO.Person;
-using TalentHub.UserService.Application.Interfaces;
 using Xunit;
 
 namespace TalentHub.UserService.Api.Tests;

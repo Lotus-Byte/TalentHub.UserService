@@ -1,6 +1,6 @@
 using TalentHub.UserService.Application.DTO.Employer;
 
-namespace TalentHub.UserService.Application.Interfaces;
+namespace TalentHub.UserService.Application.Abstractions;
 
 public interface IEmployerService
 {

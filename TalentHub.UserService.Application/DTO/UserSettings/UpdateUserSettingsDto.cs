@@ -7,6 +7,5 @@ public class UpdateUserSettingsDto
     [Required]
     public Guid UserId { get; set; }
     
-    public bool NotifyViaPush { get; set; }
-    public bool NotifyViaEmail { get; set; }
+    public UserNotificationSettingsDto UserSettings { get; init; }
 }
