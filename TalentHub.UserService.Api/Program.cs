@@ -9,6 +9,7 @@ using TalentHub.UserService.Api.Abstractions;
 using TalentHub.UserService.Api.Configurations;
 using TalentHub.UserService.Api.Extensions;
 using TalentHub.UserService.Api.Producers;
+using TalentHub.UserService.Api.Providers;
 using TalentHub.UserService.Application.Abstractions;
 using TalentHub.UserService.Application.Services;
 using TalentHub.UserService.Infrastructure;
@@ -65,6 +66,8 @@ builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IEmployerService, EmployerService>();
 builder.Services.AddScoped<IUserSettingsService, UserSettingsService>();
 builder.Services.AddScoped<INotificationProducer, NotificationProducer>();
+
+builder.Services.AddTransient<INotificationMessageModelFactory, NotificationMessageModelFactory>();
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();

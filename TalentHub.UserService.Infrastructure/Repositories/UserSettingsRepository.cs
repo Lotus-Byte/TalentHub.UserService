@@ -14,7 +14,6 @@ public class UserSettingsRepository : IUserSettingsRepository
     public async Task<UserSettings?> AddUserSettingsAsync(UserSettings? userSettings)
     {
         await _context.UserSettings.AddAsync(userSettings);
-        await _context.SaveChangesAsync();
         
         return userSettings;
     }
@@ -33,8 +32,6 @@ public class UserSettingsRepository : IUserSettingsRepository
         var entry = _context.Entry(existingSettings);
         entry.CurrentValues.SetValues(userSettings);
         
-        await _context.SaveChangesAsync();
-        
         return true;
     }
 
@@ -45,9 +42,7 @@ public class UserSettingsRepository : IUserSettingsRepository
         if (existingSettings == null) return false;
 
         existingSettings.Deleted = true;
-
-        await _context.SaveChangesAsync();
-
+        
         return true;
     }
 }

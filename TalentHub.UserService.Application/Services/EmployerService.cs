@@ -19,15 +19,20 @@ public class EmployerService : IEmployerService
 
     public async Task<Guid> CreateEmployerAsync(CreateEmployerDto createEmployerDto)
     {
+        // TODO: ADD THE GUID GENERATION IN TO MAPPING PROCESS
         var employer = _mapper.Map<CreateEmployerDto, Employer>(createEmployerDto);
 
         await _unitOfWork.Employers.AddEmployerAsync(employer);
+        
         await _unitOfWork.UserSettings.AddUserSettingsAsync(new UserSettings
         {
-            NotificationSettings = employer.UserSettings.NotificationSettings
+            UserId = employer.UserId,
+            NotificationSettings = employer.UserSettings.NotificationSettings,
+            Created = DateTime.Now,
+            Updated = DateTime.Now
         });
 
-    await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();
         
         return employer.UserId;
     }

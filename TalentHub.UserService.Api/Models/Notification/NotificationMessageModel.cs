@@ -4,8 +4,8 @@ namespace TalentHub.UserService.Api.Models.Notification;
 
 public class NotificationMessageModel
 {
-    public Guid UserId { get; init; }
-    public NotificationModel Notification { get; init; }
-    public UserNotificationSettingsModel UserSettings { get; init; }
-    public DateTime Ts { get; init; }
+    public Guid UserId { get; set; }
+    public NotificationModel Notification { get; set; }
+    public UserNotificationSettingsModel UserSettings { get; set; }
+    public DateTime Ts { get; set; }
 }

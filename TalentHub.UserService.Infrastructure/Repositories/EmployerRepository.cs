@@ -12,8 +12,6 @@ public class EmployerRepository : IEmployerRepository
     public async Task<Employer?> AddEmployerAsync(Employer? user)
     {
         await _context.Employers.AddAsync(user);
-        await _context.SaveChangesAsync();
-        
         return user;
     }
 
@@ -31,8 +29,6 @@ public class EmployerRepository : IEmployerRepository
         var entry = _context.Entry(existingEmployer);
         entry.CurrentValues.SetValues(user);
 
-        await _context.SaveChangesAsync();
-
         return true;
     }
     
@@ -43,8 +39,6 @@ public class EmployerRepository : IEmployerRepository
         if (user is null) return false;
         
         user.Deleted = true;
-
-        await _context.SaveChangesAsync();
         
         return true;
     }

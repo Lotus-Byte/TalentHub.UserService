@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TalentHub.UserService.Api.Abstractions;
 using TalentHub.UserService.Api.Models.Employer;
 using TalentHub.UserService.Api.Models.Notification;
+using TalentHub.UserService.Api.Models.UserSettings;
 using TalentHub.UserService.Application.Abstractions;
 using TalentHub.UserService.Application.DTO.Employer;
 
@@ -14,13 +15,22 @@ public class EmployerController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly INotificationProducer _producer;
-    private readonly IEmployerService _service;
+    private readonly INotificationMessageModelFactory _messageFactory;
+    private readonly IEmployerService _userService;
+    private readonly IUserSettingsService _userSettingsService;
     
-    public EmployerController(IMapper mapper, INotificationProducer producer, IEmployerService service)
+    public EmployerController(
+        IMapper mapper, 
+        INotificationProducer producer, 
+        INotificationMessageModelFactory messageFactory, 
+        IEmployerService userService,
+        IUserSettingsService userSettingsService)
     {
         _mapper = mapper;
         _producer = producer;
-        _service = service;
+        _messageFactory = messageFactory;
+        _userService = userService;
+        _userSettingsService = userSettingsService;
     }
     
     [HttpPost]
@@ -32,14 +42,20 @@ public class EmployerController : ControllerBase
         
         if (user is null) return BadRequest("Incorrect data");
 
-        var result = await _service.CreateEmployerAsync(user);
-
-        _producer.SendAsync(new NotificationMessageModel
-        {
-            // TODO: CREATE NEW MQ MESSAGE
-        });
+        var userId = await _userService.CreateEmployerAsync(user);
         
-        return Ok(result);
+        var message = _messageFactory.Create(
+            userId, 
+            createEmployerModel.UserSettings,
+            new NotificationModel
+            {
+                Title = "New employer created",
+                Content = $"New employer '{userId}' created"
+            });
+
+        await _producer.SendAsync(message);
+        
+        return Ok(userId);
     }
     
     [HttpGet("{id:guid}")]
@@ -47,7 +63,7 @@ public class EmployerController : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var employerDto = await _service.GetEmployerByIdAsync(id);
+        var employerDto = await _userService.GetEmployerByIdAsync(id);
         
         if (employerDto is null) return NotFound($"Employer with '{id}' id not found");
         
@@ -63,15 +79,27 @@ public class EmployerController : ControllerBase
         
         if (user is null) return BadRequest("Incorrect data");
         
-        return Ok(await _service.UpdateEmployerAsync(user));
+        return Ok(await _userService.UpdateEmployerAsync(user));
     }
     
     [HttpDelete]
-    public async Task<IActionResult> DeleteEmployerAsync(Guid id)
+    public async Task<IActionResult> DeleteEmployerAsync(Guid userId)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         
-        var result = await _service.DeleteEmployerAsync(id);
+        var settings = _mapper.Map<UserSettingsModel>(await _userSettingsService.GetUserSettingsByIdAsync(userId));
+        var result = await _userService.DeleteEmployerAsync(userId);
+        
+        var message = _messageFactory.Create(
+            userId, 
+            settings.NotificationSettings,
+            new NotificationModel
+            {
+                Title = "Employer deleted",
+                Content = $"Employer '{userId}' deleted"
+            });
+
+        await _producer.SendAsync(message);
         
         return result ? NoContent() : NotFound();
     }

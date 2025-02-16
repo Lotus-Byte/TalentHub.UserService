@@ -15,15 +15,24 @@ public class EmployerControllerTests
 {
     private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<INotificationProducer> _producerMock;
-    private readonly Mock<IEmployerService> _serviceMock;
+    private readonly Mock<INotificationMessageModelFactory> _messageFactoryMock;
+    private readonly Mock<IEmployerService> _employerServiceMock;
+    private readonly Mock<IUserSettingsService> _userSettingsServiceMock;
     private readonly EmployerController _controller;
 
     public EmployerControllerTests()
     {
         _mapperMock = new Mock<IMapper>();
         _producerMock = new Mock<INotificationProducer>();
-        _serviceMock = new Mock<IEmployerService>();
-        _controller = new EmployerController(_mapperMock.Object, _producerMock.Object, _serviceMock.Object);
+        _messageFactoryMock = new Mock<INotificationMessageModelFactory>();
+        _employerServiceMock = new Mock<IEmployerService>();
+        _userSettingsServiceMock = new Mock<IUserSettingsService>();
+        _controller = new EmployerController(
+            _mapperMock.Object, 
+            _producerMock.Object, 
+            _messageFactoryMock.Object, 
+            _employerServiceMock.Object,
+            _userSettingsServiceMock.Object);
     }
 
     [Fact]
@@ -58,7 +67,7 @@ public class EmployerControllerTests
         // Arrange
         var createEmployerDto = new CreateEmployerDto();
         _mapperMock.Setup(x => x.Map<CreateEmployerDto>(It.IsAny<CreateEmployerModel>())).Returns(createEmployerDto);
-        _serviceMock.Setup(x => x.CreateEmployerAsync(It.IsAny<CreateEmployerDto>())).ReturnsAsync(Guid.NewGuid());
+        _employerServiceMock.Setup(x => x.CreateEmployerAsync(It.IsAny<CreateEmployerDto>())).ReturnsAsync(Guid.NewGuid());
 
         // Act
         var result = await _controller.CreateEmployerAsync(new CreateEmployerModel());
@@ -71,7 +80,7 @@ public class EmployerControllerTests
     public async Task GetEmployerAsync_ShouldReturnNotFound_WhenEmployerIsNotFound()
     {
         // Arrange
-        _serviceMock.Setup(x => x.GetEmployerByIdAsync(It.IsAny<Guid>())).ReturnsAsync((EmployerDto)null);
+        _employerServiceMock.Setup(x => x.GetEmployerByIdAsync(It.IsAny<Guid>())).ReturnsAsync((EmployerDto)null);
 
         // Act
         var result = await _controller.GetEmployerAsync(Guid.NewGuid());
@@ -85,7 +94,7 @@ public class EmployerControllerTests
     {
         // Arrange
         var employerDto = new EmployerDto();
-        _serviceMock.Setup(x => x.GetEmployerByIdAsync(It.IsAny<Guid>())).ReturnsAsync(employerDto);
+        _employerServiceMock.Setup(x => x.GetEmployerByIdAsync(It.IsAny<Guid>())).ReturnsAsync(employerDto);
         _mapperMock.Setup(x => x.Map<EmployerModel>(It.IsAny<EmployerDto>())).Returns(new EmployerModel());
 
         // Act
@@ -127,7 +136,7 @@ public class EmployerControllerTests
         // Arrange
         var updateEmployerDto = new UpdateEmployerDto();
         _mapperMock.Setup(x => x.Map<UpdateEmployerDto>(It.IsAny<UpdateEmployerModel>())).Returns(updateEmployerDto);
-        _serviceMock.Setup(x => x.UpdateEmployerAsync(It.IsAny<UpdateEmployerDto>())).ReturnsAsync(true);
+        _employerServiceMock.Setup(x => x.UpdateEmployerAsync(It.IsAny<UpdateEmployerDto>())).ReturnsAsync(true);
 
         // Act
         var result = await _controller.UpdateEmployerAsync(new UpdateEmployerModel());
@@ -140,7 +149,7 @@ public class EmployerControllerTests
     public async Task DeleteEmployerAsync_ShouldReturnNotFound_WhenEmployerIsNotFound()
     {
         // Arrange
-        _serviceMock.Setup(x => x.DeleteEmployerAsync(It.IsAny<Guid>())).ReturnsAsync(false);
+        _employerServiceMock.Setup(x => x.DeleteEmployerAsync(It.IsAny<Guid>())).ReturnsAsync(false);
 
         // Act
         var result = await _controller.DeleteEmployerAsync(Guid.NewGuid());
@@ -153,7 +162,7 @@ public class EmployerControllerTests
     public async Task DeleteEmployerAsync_ShouldReturnNoContent_WhenEmployerIsDeletedSuccessfully()
     {
         // Arrange
-        _serviceMock.Setup(x => x.DeleteEmployerAsync(It.IsAny<Guid>())).ReturnsAsync(true);
+        _employerServiceMock.Setup(x => x.DeleteEmployerAsync(It.IsAny<Guid>())).ReturnsAsync(true);
 
         // Act
         var result = await _controller.DeleteEmployerAsync(Guid.NewGuid());
