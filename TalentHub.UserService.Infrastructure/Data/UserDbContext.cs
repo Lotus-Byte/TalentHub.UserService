@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using TalentHub.UserService.Infrastructure.Models;
+using TalentHub.UserService.Infrastructure.Models.Settings;
+using TalentHub.UserService.Infrastructure.Models.Users;
 
 namespace TalentHub.UserService.Infrastructure.Data;
 

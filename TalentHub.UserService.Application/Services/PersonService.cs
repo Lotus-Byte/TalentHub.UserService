@@ -2,18 +2,22 @@ using AutoMapper;
 using TalentHub.UserService.Application.Abstractions;
 using TalentHub.UserService.Application.DTO.Person;
 using TalentHub.UserService.Infrastructure.Abstractions;
-using TalentHub.UserService.Infrastructure.Models;
+using TalentHub.UserService.Infrastructure.Models.Notification;
+using TalentHub.UserService.Infrastructure.Models.Settings;
+using TalentHub.UserService.Infrastructure.Models.Users;
 
 namespace TalentHub.UserService.Application.Services;
 
 public class PersonService : IPersonService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly INotificationEventFactory _eventFactory;
     private readonly IMapper _mapper;
 
-    public PersonService(IUnitOfWork unitOfWork, IMapper mapper)
+    public PersonService(IUnitOfWork unitOfWork, INotificationEventFactory eventFactory, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
+        _eventFactory = eventFactory;
         _mapper = mapper;
     }
     
@@ -22,10 +26,27 @@ public class PersonService : IPersonService
         var person = _mapper.Map<CreatePersonDto, Person>(createPersonDto); 
         
         await _unitOfWork.Persons.AddPersonAsync(person);
+        
         await _unitOfWork.UserSettings.AddUserSettingsAsync(new UserSettings
         {
-            NotificationSettings = person.UserSettings.NotificationSettings
+            UserId = person.UserId,
+            NotificationSettings = person.UserSettings.NotificationSettings,
+            Created = DateTime.Now,
+            Updated = DateTime.Now
         });
+
+        var notificationEvent = _eventFactory.Create(
+            person.UserId,
+            person.UserSettings.NotificationSettings,
+            new Notification
+            {
+                Title = "Person created",
+                Content = $"New '{person.UserId}' person has been created",
+            });
+
+        _unitOfWork.AddDomainEvent(notificationEvent);
+
+        await _unitOfWork.CommitChangesAsync();
         
         return person.UserId;
     }
@@ -51,14 +72,43 @@ public class PersonService : IPersonService
         
         await _unitOfWork.Persons.UpdatePersonAsync(person);
         
+        var notificationEvent = _eventFactory.Create(
+            person.UserId,
+            person.UserSettings.NotificationSettings,
+            new Notification
+            {
+                Title = "Person updated",
+                Content = $"'{person.UserId}' person information has been updated",
+            });
+
+        _unitOfWork.AddDomainEvent(notificationEvent);
+        
+        await _unitOfWork.CommitChangesAsync();
+        
         return true;
     }
 
     public async Task<bool> DeletePersonAsync(Guid userId)
     {
+        // TODO: PROCESS THE NULL CASE
+        var settings = await _unitOfWork.UserSettings.GetUserSettingsByIdAsync(userId);
+        
         var result = await _unitOfWork.Persons.DeletePersonAsync(userId);
+        
         await _unitOfWork.UserSettings.DeleteUserSettingsAsync(userId);
-        await _unitOfWork.SaveChangesAsync();
+        
+        var notificationEvent = _eventFactory.Create(
+            userId,
+            settings.NotificationSettings,
+            new Notification
+            {
+                Title = "Person deleted",
+                Content = $"'{userId}' person and personal notification settings have been deleted",
+            });
+
+        _unitOfWork.AddDomainEvent(notificationEvent);
+        
+        await _unitOfWork.CommitChangesAsync();
         
         return result;
     }

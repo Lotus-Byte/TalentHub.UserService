@@ -1,4 +1,4 @@
-namespace TalentHub.UserService.Infrastructure.Models;
+namespace TalentHub.UserService.Infrastructure.Models.Settings;
 
 public class UserNotificationSettings
 {

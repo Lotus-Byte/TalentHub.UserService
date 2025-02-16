@@ -2,7 +2,6 @@ using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using TalentHub.UserService.Api.Abstractions;
 using TalentHub.UserService.Api.Controllers;
 using TalentHub.UserService.Api.Models.Employer;
 using TalentHub.UserService.Application.Abstractions;
@@ -14,25 +13,16 @@ namespace TalentHub.UserService.Api.Tests;
 public class EmployerControllerTests
 {
     private readonly Mock<IMapper> _mapperMock;
-    private readonly Mock<INotificationProducer> _producerMock;
-    private readonly Mock<INotificationMessageModelFactory> _messageFactoryMock;
     private readonly Mock<IEmployerService> _employerServiceMock;
-    private readonly Mock<IUserSettingsService> _userSettingsServiceMock;
     private readonly EmployerController _controller;
 
     public EmployerControllerTests()
     {
         _mapperMock = new Mock<IMapper>();
-        _producerMock = new Mock<INotificationProducer>();
-        _messageFactoryMock = new Mock<INotificationMessageModelFactory>();
         _employerServiceMock = new Mock<IEmployerService>();
-        _userSettingsServiceMock = new Mock<IUserSettingsService>();
         _controller = new EmployerController(
             _mapperMock.Object, 
-            _producerMock.Object, 
-            _messageFactoryMock.Object, 
-            _employerServiceMock.Object,
-            _userSettingsServiceMock.Object);
+            _employerServiceMock.Object);
     }
 
     [Fact]

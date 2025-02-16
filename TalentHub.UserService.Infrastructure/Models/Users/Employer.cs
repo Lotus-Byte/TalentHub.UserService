@@ -1,4 +1,4 @@
-namespace TalentHub.UserService.Infrastructure.Models;
+namespace TalentHub.UserService.Infrastructure.Models.Users;
 
 public class Employer : User
 {

@@ -1,6 +1,6 @@
-using TalentHub.UserService.Infrastructure.Models;
+using TalentHub.UserService.Infrastructure.Models.Users;
 
-namespace TalentHub.UserService.Infrastructure.Abstractions;
+namespace TalentHub.UserService.Infrastructure.Abstractions.Repositories;
 
 public interface IPersonRepository
 {

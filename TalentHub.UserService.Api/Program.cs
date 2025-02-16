@@ -5,16 +5,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using TalentHub.UserService.Api.Abstractions;
 using TalentHub.UserService.Api.Configurations;
 using TalentHub.UserService.Api.Extensions;
-using TalentHub.UserService.Api.Producers;
-using TalentHub.UserService.Api.Providers;
 using TalentHub.UserService.Application.Abstractions;
 using TalentHub.UserService.Application.Services;
-using TalentHub.UserService.Infrastructure;
 using TalentHub.UserService.Infrastructure.Abstractions;
+using TalentHub.UserService.Infrastructure.Abstractions.DomainEvents;
+using TalentHub.UserService.Infrastructure.Abstractions.Repositories;
 using TalentHub.UserService.Infrastructure.Data;
+using TalentHub.UserService.Infrastructure.EventHandlers;
+using TalentHub.UserService.Infrastructure.Models.Notification;
+using TalentHub.UserService.Infrastructure.Providers;
 using TalentHub.UserService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,23 +52,25 @@ builder.Services.AddMassTransit(x =>
             rmqCfg.Username(rabbitMqConfiguration.Username);
             rmqCfg.Password(rabbitMqConfiguration.Password);
         });
+        
+        // Queue configuration
+        // cfg.Message<UserCreatedMessage>(x => x.SetEntityName(settings.Queues.UserCreatedQueue));
     });
 });
 
+builder.Services.AddScoped<IEmployerRepository, EmployerRepository>();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
-builder.Services.AddScoped<IEmployerRepository, EmployerRepository>();
 builder.Services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IEventHandler<NotificationEvent>, NotificationEventHandler>();
+builder.Services.AddScoped<INotificationEventFactory, NotificationEventFactory>();
 
+builder.Services.AddScoped<IEmployerService, EmployerService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<IStaffService, StaffService>();
-builder.Services.AddScoped<IEmployerService, EmployerService>();
 builder.Services.AddScoped<IUserSettingsService, UserSettingsService>();
-builder.Services.AddScoped<INotificationProducer, NotificationProducer>();
-
-builder.Services.AddTransient<INotificationMessageModelFactory, NotificationMessageModelFactory>();
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();

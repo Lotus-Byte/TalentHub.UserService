@@ -1,4 +1,6 @@
-namespace TalentHub.UserService.Infrastructure.Models;
+using TalentHub.UserService.Infrastructure.Models.Settings;
+
+namespace TalentHub.UserService.Infrastructure.Models.Users;
 
 public abstract class User
 {
