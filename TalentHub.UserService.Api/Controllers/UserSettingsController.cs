@@ -40,7 +40,7 @@ public class UserSettingsController : ControllerBase
         
         if (userSettingsDto is null) return NotFound($"Configurations for user '{id}' not found");
         
-        return Ok(_mapper.Map<UserSettingsModel>(userSettingsDto));
+        return Ok(_mapper.Map<UserNotificationSettingsModel>(userSettingsDto));
     }
     
     [HttpPut]
