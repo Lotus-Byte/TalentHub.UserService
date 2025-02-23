@@ -1,3 +1,5 @@
+using TalentHub.UserService.Api.Models.UserSettings;
+
 namespace TalentHub.UserService.Api.Models.Staff;
 
 public class CreateStaffModel
@@ -8,4 +10,5 @@ public class CreateStaffModel
     public string? LastName { get; set; }
     public string? Email { get; set; }
     public string? AccessLevel { get; set; }
+    public UserNotificationSettingsModel UserSettings { get; set; }
 }

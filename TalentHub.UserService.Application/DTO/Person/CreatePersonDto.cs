@@ -1,3 +1,5 @@
+using TalentHub.UserService.Application.DTO.UserSettings;
+
 namespace TalentHub.UserService.Application.DTO.Person;
 
 public class CreatePersonDto
@@ -10,4 +12,5 @@ public class CreatePersonDto
     public DateTime BirthDate { get; set; }
     public string? Gender { get; set; }
     public string? City { get; set; }
+    public UserNotificationSettingsDto UserSettings { get; set; }
 }

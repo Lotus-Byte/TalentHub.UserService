@@ -1,3 +1,5 @@
+using TalentHub.UserService.Application.DTO.UserSettings;
+
 namespace TalentHub.UserService.Application.DTO.Employer;
 
 public class CreateEmployerDto
@@ -15,4 +17,5 @@ public class CreateEmployerDto
     public string? Inn { get; set; }
     public string? Kpp { get; set; }
     public string? Address { get; set; }
+    public UserNotificationSettingsDto UserSettings { get; set; }
 }

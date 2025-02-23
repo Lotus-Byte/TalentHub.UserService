@@ -1,14 +1,13 @@
 using MassTransit;
 using TalentHub.UserService.Infrastructure.Abstractions.DomainEvents;
-using TalentHub.UserService.Infrastructure.Models.Notification;
 
 namespace TalentHub.UserService.Infrastructure.EventHandlers;
 
-public class NotificationEventHandler : IEventHandler<NotificationEvent>
+public class NotificationEventHandler : IEventHandler<IDomainEvent>
 {
     private readonly IBus _bus;
     
     public NotificationEventHandler(IBus bus) => _bus = bus;
 
-    public async Task HandleAsync(NotificationEvent notificationEvent) => await _bus.Publish(notificationEvent);
+    public async Task HandleAsync(IDomainEvent notificationEvent) => await _bus.Publish(notificationEvent);
 }

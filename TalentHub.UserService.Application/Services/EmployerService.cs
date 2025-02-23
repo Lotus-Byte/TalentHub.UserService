@@ -1,6 +1,7 @@
 using AutoMapper;
 using TalentHub.UserService.Application.Abstractions;
 using TalentHub.UserService.Application.DTO.Employer;
+using TalentHub.UserService.Application.DTO.UserSettings;
 using TalentHub.UserService.Infrastructure.Abstractions;
 using TalentHub.UserService.Infrastructure.Models.Notification;
 using TalentHub.UserService.Infrastructure.Models.Settings;
@@ -23,7 +24,6 @@ public class EmployerService : IEmployerService
 
     public async Task<Guid> CreateEmployerAsync(CreateEmployerDto createEmployerDto)
     {
-        // TODO: ADD THE GUID GENERATION IN TO MAPPING PROCESS
         var employer = _mapper.Map<CreateEmployerDto, Employer>(createEmployerDto);
 
         await _unitOfWork.Employers.AddEmployerAsync(employer);
@@ -31,7 +31,7 @@ public class EmployerService : IEmployerService
         await _unitOfWork.UserSettings.AddUserSettingsAsync(new UserSettings
         {
             UserId = employer.UserId,
-            NotificationSettings = employer.UserSettings.NotificationSettings,
+            NotificationSettings = _mapper.Map<UserNotificationSettingsDto, UserNotificationSettings>(createEmployerDto.UserSettings),
             Created = DateTime.Now,
             Updated = DateTime.Now
         });

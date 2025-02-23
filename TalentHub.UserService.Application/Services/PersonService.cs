@@ -1,6 +1,7 @@
 using AutoMapper;
 using TalentHub.UserService.Application.Abstractions;
 using TalentHub.UserService.Application.DTO.Person;
+using TalentHub.UserService.Application.DTO.UserSettings;
 using TalentHub.UserService.Infrastructure.Abstractions;
 using TalentHub.UserService.Infrastructure.Models.Notification;
 using TalentHub.UserService.Infrastructure.Models.Settings;
@@ -30,7 +31,7 @@ public class PersonService : IPersonService
         await _unitOfWork.UserSettings.AddUserSettingsAsync(new UserSettings
         {
             UserId = person.UserId,
-            NotificationSettings = person.UserSettings.NotificationSettings,
+            NotificationSettings = _mapper.Map<UserNotificationSettingsDto, UserNotificationSettings>(createPersonDto.UserSettings),
             Created = DateTime.Now,
             Updated = DateTime.Now
         });

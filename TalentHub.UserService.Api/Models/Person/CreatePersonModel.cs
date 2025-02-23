@@ -1,3 +1,5 @@
+using TalentHub.UserService.Api.Models.UserSettings;
+
 namespace TalentHub.UserService.Api.Models.Person;
 
 public class CreatePersonModel
@@ -10,4 +12,5 @@ public class CreatePersonModel
     public DateTime BirthDate { get; set; }
     public string? Gender { get; set; }
     public string? City { get; set; }
+    public UserNotificationSettingsModel UserSettings { get; set; }
 }

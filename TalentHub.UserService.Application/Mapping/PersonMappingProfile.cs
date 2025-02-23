@@ -17,7 +17,8 @@ public class PersonMappingProfile : Profile
             .ForMember(d => d.UserId, map => map.Ignore())
             .ForMember(d => d.Created, map => map.Ignore())
             .ForMember(d => d.Updated, map => map.Ignore())
-            .ForMember(d => d.Deleted, map => map.Ignore());
+            .ForMember(d => d.Deleted, map => map.Ignore())
+            .ForMember(d => d.UserSettings, map => map.Ignore());
         
         CreateMap<UpdatePersonDto, Person>()
             .ForMember(d => d.Created, map => map.Ignore())
