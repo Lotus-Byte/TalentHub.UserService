@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TalentHub.UserService.Api.Configurations;
 using TalentHub.UserService.Api.Extensions;
@@ -20,15 +21,14 @@ using TalentHub.UserService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddEnvironmentVariables();
 builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
 builder.Configuration.AddJsonFile("appsettings.json");
+builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddOptions<ApplicationConfiguration>()
     .BindConfiguration(nameof(ApplicationConfiguration));
 builder.Services.AddOptions<RabbitMqConfiguration>()
     .BindConfiguration(nameof(RabbitMqConfiguration));
-
 
 builder.Services.AddDbContext<UserDbContext>((sp, options) =>
 {
@@ -53,9 +53,19 @@ builder.Services.AddMassTransit(x =>
             rmqCfg.Username(rabbitMqConfiguration.Username);
             rmqCfg.Password(rabbitMqConfiguration.Password);
         });
-        
+
         cfg.Message<NotificationEvent>(ct => 
             ct.SetEntityName(rabbitMqConfiguration.QueueName));
+        
+        cfg.Send<NotificationEvent>(s => 
+            s.UseRoutingKeyFormatter(_ => rabbitMqConfiguration.QueueName));
+        
+        cfg.Publish<NotificationEvent>(p =>
+        {
+            p.ExchangeType = RabbitMQ.Client.ExchangeType.Direct;
+            p.Durable = true;
+            p.AutoDelete = false;
+        });
     });
 });
 
@@ -65,7 +75,7 @@ builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 builder.Services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IEventHandler<IDomainEvent>, NotificationEventHandler>();
+builder.Services.AddScoped<IEventHandler<NotificationEvent>, NotificationEventHandler>();
 builder.Services.AddScoped<INotificationEventFactory, NotificationEventFactory>();
 
 builder.Services.AddScoped<IEmployerService, EmployerService>();
@@ -84,16 +94,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-var configuration = app.Services.GetRequiredService<IConfiguration>();
-foreach (var config in configuration.AsEnumerable())
-{
-    Console.WriteLine($"{config.Key} = {config.Value}");
-}
-
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    logger.LogInformation("Applying migrations...");
     dbContext.Database.Migrate();
+    logger.LogInformation("Migrations applied successfully.");
 }
 
 app.UseRouting();

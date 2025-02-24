@@ -7,6 +7,5 @@ public class NotificationEvent : IDomainEvent
 {
     public Guid UserId { get; set; }
     public Notification Notification { get; set; }
-    public UserNotificationSettings UserSettings { get; set; }
-    public DateTime Ts { get; set; }
+    public DateTimeOffset Ts { get; set; }
 }

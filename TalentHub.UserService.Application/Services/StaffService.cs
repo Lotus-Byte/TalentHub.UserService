@@ -32,13 +32,12 @@ public class StaffService : IStaffService
         {
             UserId = staff.UserId,
             NotificationSettings = _mapper.Map<UserNotificationSettingsDto, UserNotificationSettings>(createStaffDto.UserSettings),
-            Created = DateTime.Now,
-            Updated = DateTime.Now
+            Created = DateTimeOffset.Now,
+            Updated = DateTimeOffset.Now
         });
 
         var notificationEvent = _eventFactory.Create(
             staff.UserId,
-            staff.UserSettings.NotificationSettings,
             new Notification
             {
                 Title = "Staff created",
@@ -75,7 +74,6 @@ public class StaffService : IStaffService
         
         var notificationEvent = _eventFactory.Create(
             staff.UserId,
-            staff.UserSettings.NotificationSettings,
             new Notification
             {
                 Title = "Staff updated",
@@ -91,16 +89,12 @@ public class StaffService : IStaffService
 
     public async Task<bool> DeleteStaffAsync(Guid userId)
     {
-        // TODO: PROCESS THE NULL CASE
-        var settings = await _unitOfWork.UserSettings.GetUserSettingsByIdAsync(userId);
-        
         var result =  await _unitOfWork.Staffs.DeleteStaffAsync(userId);
         
         await _unitOfWork.UserSettings.DeleteUserSettingsAsync(userId);
         
         var notificationEvent = _eventFactory.Create(
             userId,
-            settings.NotificationSettings,
             new Notification
             {
                 Title = "Staff deleted",

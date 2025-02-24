@@ -5,5 +5,5 @@ namespace TalentHub.UserService.Infrastructure.Abstractions;
 
 public interface INotificationEventFactory
 {
-    NotificationEvent Create(Guid userId, UserNotificationSettings userSettings, Notification notification);
+    NotificationEvent Create(Guid userId, Notification notification);
 }

@@ -32,13 +32,12 @@ public class PersonService : IPersonService
         {
             UserId = person.UserId,
             NotificationSettings = _mapper.Map<UserNotificationSettingsDto, UserNotificationSettings>(createPersonDto.UserSettings),
-            Created = DateTime.Now,
-            Updated = DateTime.Now
+            Created = DateTimeOffset.Now,
+            Updated = DateTimeOffset.Now
         });
 
         var notificationEvent = _eventFactory.Create(
             person.UserId,
-            person.UserSettings.NotificationSettings,
             new Notification
             {
                 Title = "Person created",
@@ -75,7 +74,6 @@ public class PersonService : IPersonService
         
         var notificationEvent = _eventFactory.Create(
             person.UserId,
-            person.UserSettings.NotificationSettings,
             new Notification
             {
                 Title = "Person updated",
@@ -91,16 +89,12 @@ public class PersonService : IPersonService
 
     public async Task<bool> DeletePersonAsync(Guid userId)
     {
-        // TODO: PROCESS THE NULL CASE
-        var settings = await _unitOfWork.UserSettings.GetUserSettingsByIdAsync(userId);
-        
         var result = await _unitOfWork.Persons.DeletePersonAsync(userId);
         
         await _unitOfWork.UserSettings.DeleteUserSettingsAsync(userId);
         
         var notificationEvent = _eventFactory.Create(
             userId,
-            settings.NotificationSettings,
             new Notification
             {
                 Title = "Person deleted",

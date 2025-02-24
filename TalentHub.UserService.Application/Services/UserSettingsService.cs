@@ -28,7 +28,6 @@ public class UserSettingsService : IUserSettingsService
         
         var notificationEvent = _eventFactory.Create(
             userSettings.UserId,
-            userSettings.NotificationSettings,
             new Notification
             {
                 Title = "Notification settings created",
@@ -65,7 +64,6 @@ public class UserSettingsService : IUserSettingsService
         
         var notificationEvent = _eventFactory.Create(
             userSettings.UserId,
-            userSettings.NotificationSettings,
             new Notification
             {
                 Title = "Notification settings updated",
@@ -81,14 +79,10 @@ public class UserSettingsService : IUserSettingsService
 
     public async Task<bool> DeleteUserSettingsAsync(Guid userId)
     {
-        // TODO: PROCESS THE NULL CASE
-        var settings = await _unitOfWork.UserSettings.GetUserSettingsByIdAsync(userId);
-        
         var result =  await _unitOfWork.UserSettings.DeleteUserSettingsAsync(userId);
         
         var notificationEvent = _eventFactory.Create(
             userId,
-            settings.NotificationSettings,
             new Notification
             {
                 Title = "Staff deleted",

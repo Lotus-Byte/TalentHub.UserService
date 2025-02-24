@@ -1,5 +1,6 @@
 using TalentHub.UserService.Infrastructure.Abstractions.DomainEvents;
 using TalentHub.UserService.Infrastructure.Abstractions.Repositories;
+using TalentHub.UserService.Infrastructure.Models.Notification;
 
 namespace TalentHub.UserService.Infrastructure.Abstractions;
 
@@ -9,6 +10,6 @@ public interface IUnitOfWork : IDisposable
     IPersonRepository Persons { get; }
     IStaffRepository Staffs { get; }
     IUserSettingsRepository UserSettings { get; }
-    void AddDomainEvent(IDomainEvent domainEvent);
+    void AddDomainEvent(NotificationEvent domainEvent);
     Task CommitChangesAsync();
 }

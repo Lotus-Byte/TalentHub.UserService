@@ -44,7 +44,8 @@ public class UserDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasOne(u => u.UserSettings)
             .WithOne(us => us.User)
-            .HasForeignKey<UserSettings>(us => us.UserId);
+            .HasForeignKey<UserSettings>(us => us.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Конфигурация таблиц, связанных с UserSettings
         modelBuilder.Entity<UserSettings>()

@@ -32,13 +32,12 @@ public class EmployerService : IEmployerService
         {
             UserId = employer.UserId,
             NotificationSettings = _mapper.Map<UserNotificationSettingsDto, UserNotificationSettings>(createEmployerDto.UserSettings),
-            Created = DateTime.Now,
-            Updated = DateTime.Now
+            Created = DateTimeOffset.Now,
+            Updated = DateTimeOffset.Now
         });
 
         var notificationEvent = _eventFactory.Create(
             employer.UserId,
-            employer.UserSettings.NotificationSettings,
             new Notification
             {
                 Title = "Employer created",
@@ -75,7 +74,6 @@ public class EmployerService : IEmployerService
         
         var notificationEvent = _eventFactory.Create(
             employer.UserId,
-            employer.UserSettings.NotificationSettings,
             new Notification
             {
                 Title = "Employer updated",
@@ -91,16 +89,12 @@ public class EmployerService : IEmployerService
     
     public async Task<bool> DeleteEmployerAsync(Guid userId)
     {
-        // TODO: PROCESS THE NULL CASE
-        var settings = await _unitOfWork.UserSettings.GetUserSettingsByIdAsync(userId);
-        
         var result = await _unitOfWork.Employers.DeleteEmployerAsync(userId);
 
         await _unitOfWork.UserSettings.DeleteUserSettingsAsync(userId);
         
         var notificationEvent = _eventFactory.Create(
             userId,
-            settings.NotificationSettings,
             new Notification
             {
                 Title = "Employer deleted",

@@ -3,6 +3,7 @@ using TalentHub.UserService.Infrastructure.Abstractions;
 using TalentHub.UserService.Infrastructure.Abstractions.DomainEvents;
 using TalentHub.UserService.Infrastructure.Abstractions.Repositories;
 using TalentHub.UserService.Infrastructure.Data;
+using TalentHub.UserService.Infrastructure.Models.Notification;
 using TalentHub.UserService.Infrastructure.Repositories;
 
 namespace TalentHub.UserService.Infrastructure.Providers;
@@ -10,16 +11,16 @@ namespace TalentHub.UserService.Infrastructure.Providers;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly UserDbContext _context;
-    private readonly IEventHandler<IDomainEvent> _eventHandler;
+    private readonly IEventHandler<NotificationEvent> _eventHandler;
     
-    private readonly ConcurrentBag<IDomainEvent> _domainEvents = [];
+    private readonly ConcurrentBag<NotificationEvent> _domainEvents = [];
 
     private IEmployerRepository? _employers;
     private IPersonRepository? _persons;
     private IStaffRepository? _staffs;
     private IUserSettingsRepository? _userSettings;
 
-    public UnitOfWork(UserDbContext context, IEventHandler<IDomainEvent> eventHandler)
+    public UnitOfWork(UserDbContext context, IEventHandler<NotificationEvent> eventHandler)
     {
         _context = context;
         _eventHandler = eventHandler;
@@ -30,7 +31,7 @@ public class UnitOfWork : IUnitOfWork
     public IStaffRepository Staffs => _staffs ??= new StaffRepository(_context);
     public IUserSettingsRepository UserSettings => _userSettings ??= new UserSettingsRepository(_context);
     
-    public void AddDomainEvent(IDomainEvent domainEvent)
+    public void AddDomainEvent(NotificationEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);
     }
