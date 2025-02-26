@@ -1,4 +1,3 @@
-using TalentHub.UserService.Infrastructure.Abstractions.DomainEvents;
 using TalentHub.UserService.Infrastructure.Abstractions.Repositories;
 using TalentHub.UserService.Infrastructure.Models.Notification;
 

@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using RabbitMQ.Client;
 using TalentHub.UserService.Api.Configurations;
 using TalentHub.UserService.Api.Extensions;
 using TalentHub.UserService.Application.Abstractions;
@@ -43,29 +44,28 @@ builder.Services.AddMassTransit(x =>
 {
     x.UsingRabbitMq((context, cfg) =>
     {
-        var configuration = context.GetService<IOptions<RabbitMqConfiguration>>()
-                            ?? throw new ConfigurationException($"Lack of '{nameof(RabbitMqConfiguration)}' settings");
+         var configuration = context.GetService<IOptions<RabbitMqConfiguration>>()
+                     ?? throw new ConfigurationException($"Lack of '{nameof(RabbitMqConfiguration)}' settings");
 
-        var rabbitMqConfiguration = configuration.Value;
-
-        cfg.Host(rabbitMqConfiguration.Host, rmqCfg =>
+         var rabbitMqConfiguration = configuration.Value;
+         
+        cfg.Host(rabbitMqConfiguration.Host, rabbitMqConfiguration.VirtualHost, h =>
         {
-            rmqCfg.Username(rabbitMqConfiguration.Username);
-            rmqCfg.Password(rabbitMqConfiguration.Password);
+            h.Username(rabbitMqConfiguration.Username);
+            h.Password(rabbitMqConfiguration.Password);
         });
-
-        cfg.Message<NotificationEvent>(ct => 
-            ct.SetEntityName(rabbitMqConfiguration.QueueName));
         
-        cfg.Send<NotificationEvent>(s => 
-            s.UseRoutingKeyFormatter(_ => rabbitMqConfiguration.QueueName));
+        cfg.Message<NotificationEvent>(ct => 
+            ct.SetEntityName("notification_event"));
         
         cfg.Publish<NotificationEvent>(p =>
         {
-            p.ExchangeType = RabbitMQ.Client.ExchangeType.Direct;
-            p.Durable = true;
-            p.AutoDelete = false;
+            p.ExchangeType = ExchangeType.Direct;
         });
+        
+        cfg.Send<NotificationEvent>(s => 
+            s.UseRoutingKeyFormatter(busCtx =>
+                rabbitMqConfiguration.QueueName));
     });
 });
 

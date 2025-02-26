@@ -10,6 +10,10 @@ public class UserSettingsMappingProfile : Profile
     {
         CreateMap<UserSettingsDto, UserSettings>();
         
+        CreateMap<UserSettings, UserSettingsDto>()
+            .ForMember(d => d.Created, map => map.MapFrom(src => src.Created.DateTime))
+            .ForMember(d => d.Updated, map => map.MapFrom(src => src.Updated.DateTime));
+        
         CreateMap<CreateUserSettingsDto, UserSettings>()
             .ForMember(d => d.UserSettingsId, map => map.Ignore())
             .ForMember(d => d.UserId, map => map.Ignore())
@@ -29,9 +33,17 @@ public class UserSettingsMappingProfile : Profile
                 opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.Push, opt => 
                 opt.MapFrom(src => src.Push));
+        
+        CreateMap<UserNotificationSettings, UserNotificationSettingsDto>()
+            .ForMember(dest => dest.Email, opt => 
+                opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.Push, opt => 
+                opt.MapFrom(src => src.Push));
 
         CreateMap<EmailNotificationSettingsDto, EmailNotificationSettings>();
+        CreateMap<EmailNotificationSettings, EmailNotificationSettingsDto>();
         
         CreateMap<PushNotificationSettingsDto, PushNotificationSettings>();
+        CreateMap<PushNotificationSettings, PushNotificationSettingsDto>();
     }
 }

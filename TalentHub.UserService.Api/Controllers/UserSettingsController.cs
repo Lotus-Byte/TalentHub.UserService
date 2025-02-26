@@ -33,14 +33,14 @@ public class UserSettingsController : ControllerBase
     
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetUserSettingsAsync(Guid id)
-    {
+    { 
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         var userSettingsDto = await _service.GetUserSettingsByIdAsync(id);
         
         if (userSettingsDto is null) return NotFound($"Configurations for user '{id}' not found");
         
-        return Ok(_mapper.Map<UserNotificationSettingsModel>(userSettingsDto));
+        return Ok(_mapper.Map<UserNotificationSettingsModel>(userSettingsDto.NotificationSettings));
     }
     
     [HttpPut]

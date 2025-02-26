@@ -1,5 +1,4 @@
 using TalentHub.UserService.Infrastructure.Models.Notification;
-using TalentHub.UserService.Infrastructure.Models.Settings;
 
 namespace TalentHub.UserService.Infrastructure.Abstractions;
 

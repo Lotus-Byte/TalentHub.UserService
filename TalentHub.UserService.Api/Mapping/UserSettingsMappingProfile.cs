@@ -6,10 +6,11 @@ namespace TalentHub.UserService.Api.Mapping;
 
 public class UserSettingsMappingProfile : Profile
 {
-    // TODO: SORT OUT WITH THE ORDER OF MODELS IN PROFILE
     public UserSettingsMappingProfile()
     {
         CreateMap<UserSettingsDto, UserSettingsModel>();
+        CreateMap<UserSettingsModel, UserSettingsDto>();
+        
         CreateMap<CreateUserSettingsModel, CreateUserSettingsDto>();
         CreateMap<UpdateUserSettingsModel, UpdateUserSettingsDto>();
         
@@ -18,9 +19,17 @@ public class UserSettingsMappingProfile : Profile
                 opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.Push, opt => 
                 opt.MapFrom(src => src.Push));
+        
+        CreateMap<UserNotificationSettingsDto, UserNotificationSettingsModel>()
+            .ForMember(dest => dest.Email, opt => 
+                opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.Push, opt => 
+                opt.MapFrom(src => src.Push));
 
         CreateMap<EmailNotificationSettingsModel, EmailNotificationSettingsDto>();
+        CreateMap<EmailNotificationSettingsDto, EmailNotificationSettingsModel>();
         
         CreateMap<PushNotificationSettingsModel, PushNotificationSettingsDto>();
+        CreateMap<PushNotificationSettingsDto, PushNotificationSettingsModel>();
     }
 }

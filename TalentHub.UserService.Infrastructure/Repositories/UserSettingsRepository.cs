@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using TalentHub.UserService.Infrastructure.Abstractions.Repositories;
 using TalentHub.UserService.Infrastructure.Data;
 using TalentHub.UserService.Infrastructure.Models.Settings;
@@ -18,14 +19,20 @@ public class UserSettingsRepository : IUserSettingsRepository
         return userSettings;
     }
     
-    public async Task<UserSettings?> GetUserSettingsByIdAsync(Guid userId)
+    public async Task<UserSettings?> GetUserSettingsByUserIdAsync(Guid userId)
     {
-        return await _context.UserSettings.FindAsync(userId);
+        return await _context.UserSettings
+            .Include(us => us.NotificationSettings)
+            .ThenInclude(uns => uns.Email)
+            .Include(us => us.NotificationSettings)
+            .ThenInclude(uns => uns.Push)
+            .SingleOrDefaultAsync(us => us.UserId == userId);
     }
 
     public async Task<bool> UpdateUserSettingsAsync(UserSettings userSettings)
     {
-        var existingSettings = await _context.UserSettings.FindAsync(userSettings.UserId);
+        var existingSettings = await _context.UserSettings.SingleOrDefaultAsync(c => 
+            c.UserId == userSettings.UserId);
         
         if (existingSettings == null) return false;
         

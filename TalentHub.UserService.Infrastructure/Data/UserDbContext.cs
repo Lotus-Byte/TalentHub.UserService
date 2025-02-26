@@ -20,41 +20,41 @@ public class UserDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Настройка таблицы User
+        // Конфигурация таблиц, связанных с User
         modelBuilder.Entity<User>()
             .ToTable("Users")
             .HasKey(u => u.UserId);
-
-        // Настройка таблицы Employer
+        
         modelBuilder.Entity<Employer>()
             .ToTable("Employers")
             .HasBaseType<User>();
-
-        // Настройка таблицы Staff
+        
         modelBuilder.Entity<Staff>()
             .ToTable("Staff")
             .HasBaseType<User>();
-
-        // Настройка таблицы Person
+        
         modelBuilder.Entity<Person>()
             .ToTable("Persons")
             .HasBaseType<User>();
-
-        // Настройка связи один-к-одному между User и UserSettings
+        
         modelBuilder.Entity<User>()
             .HasOne(u => u.UserSettings)
             .WithOne(us => us.User)
             .HasForeignKey<UserSettings>(us => us.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
 
         // Конфигурация таблиц, связанных с UserSettings
         modelBuilder.Entity<UserSettings>()
+            .ToTable("UserSettings")
             .HasKey(us => us.UserSettingsId);
 
         modelBuilder.Entity<UserSettings>()
             .HasOne(us => us.NotificationSettings)
             .WithOne(uns => uns.UserSettings)
-            .HasForeignKey<UserNotificationSettings>(uns => uns.Id);
+            .HasForeignKey<UserNotificationSettings>(uns => uns.UserSettingsId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
 
         modelBuilder.Entity<UserNotificationSettings>()
             .HasKey(uns => uns.Id);
@@ -62,12 +62,16 @@ public class UserDbContext : DbContext
         modelBuilder.Entity<UserNotificationSettings>()
             .HasOne(uns => uns.Email)
             .WithOne(e => e.UserNotificationSettings)
-            .HasForeignKey<EmailNotificationSettings>(e => e.Id);
+            .HasForeignKey<EmailNotificationSettings>(e => e.UserNotificationSettingsId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
 
         modelBuilder.Entity<UserNotificationSettings>()
             .HasOne(uns => uns.Push)
             .WithOne(p => p.UserNotificationSettings)
-            .HasForeignKey<PushNotificationSettings>(p => p.Id);
+            .HasForeignKey<PushNotificationSettings>(p => p.UserNotificationSettingsId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
 
         modelBuilder.Entity<EmailNotificationSettings>()
             .HasKey(e => e.Id);

@@ -43,7 +43,7 @@ public class UserSettingsService : IUserSettingsService
     
     public async Task<UserSettingsDto?> GetUserSettingsByIdAsync(Guid userId)
     {
-        var userSettings = await _unitOfWork.UserSettings.GetUserSettingsByIdAsync(userId);
+        var userSettings = await _unitOfWork.UserSettings.GetUserSettingsByUserIdAsync(userId);
         
         if (userSettings == null) return null;
         
@@ -54,7 +54,7 @@ public class UserSettingsService : IUserSettingsService
 
     public async Task<bool> UpdateUserSettingsAsync(UpdateUserSettingsDto updateUserSettingsDto)
     {
-        var userSettings = await _unitOfWork.UserSettings.GetUserSettingsByIdAsync(updateUserSettingsDto.UserId);
+        var userSettings = await _unitOfWork.UserSettings.GetUserSettingsByUserIdAsync(updateUserSettingsDto.UserId);
         
         if (userSettings is null) return false;
         

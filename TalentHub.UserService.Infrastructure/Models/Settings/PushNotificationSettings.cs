@@ -5,6 +5,7 @@ namespace TalentHub.UserService.Infrastructure.Models.Settings;
 public class PushNotificationSettings
 {
     public Guid Id { get; set; }
+    public Guid UserNotificationSettingsId { get; set; }
     public bool Enabled { get; set; }
     public string DeviceToken { get; set; }
     
