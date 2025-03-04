@@ -9,7 +9,12 @@ public class StaffMappingProfile : Profile
     public StaffMappingProfile()
     {
         CreateMap<StaffDto, StaffModel>();
+        CreateMap<StaffModel, StaffDto>();
+        
         CreateMap<CreateStaffModel, CreateStaffDto>();
+        CreateMap<CreateStaffDto, CreateStaffModel>();
+        
         CreateMap<UpdateStaffModel, UpdateStaffDto>();
+        CreateMap<UpdateStaffDto, UpdateStaffModel>();
     }
 }

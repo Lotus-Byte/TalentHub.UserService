@@ -11,7 +11,9 @@ public class StaffMappingProfile : Profile
     {
         CreateMap<StaffDto, Staff>();
         
-        CreateMap<Staff, StaffDto>();
+        CreateMap<Staff, StaffDto>()
+            .ForMember(d => d.Created, 
+                map => map.MapFrom(src => src.Created.DateTime));
         
         CreateMap<CreateStaffDto, Staff>()
             .ForMember(d => d.UserId, map => map.Ignore())

@@ -9,7 +9,12 @@ public class PersonMappingProfile : Profile
     public PersonMappingProfile()
     {
         CreateMap<PersonDto, PersonModel>();
+        CreateMap<PersonModel, PersonDto>();
+        
         CreateMap<CreatePersonModel, CreatePersonDto>();
+        CreateMap<CreatePersonDto, CreatePersonModel>();
+        
         CreateMap<UpdatePersonModel, UpdatePersonDto>();
+        CreateMap<UpdatePersonDto, UpdatePersonModel>();
     }
 }

@@ -9,11 +9,11 @@ public class EmployerMappingProfile : Profile
     // TODO: consider to add a date on create and update opts.
     public EmployerMappingProfile()
     {
-        CreateMap<Employer, Employer>();
-        
         CreateMap<EmployerDto, Employer>();
         
-        CreateMap<Employer, EmployerDto>();
+        CreateMap<Employer, EmployerDto>()
+            .ForMember(d => d.Created, 
+                map => map.MapFrom(src => src.Created.DateTime));
         
         CreateMap<CreateEmployerDto, Employer>()
             .ForMember(d => d.UserId, map => map.Ignore())

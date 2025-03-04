@@ -9,7 +9,12 @@ public class EmployerMappingProfile : Profile
     public EmployerMappingProfile()
     {
         CreateMap<EmployerDto, EmployerModel>();
+        CreateMap<EmployerModel, EmployerDto>();
+        
         CreateMap<CreateEmployerModel, CreateEmployerDto>();
+        CreateMap<CreateEmployerDto, CreateEmployerModel>();
+        
         CreateMap<UpdateEmployerModel, UpdateEmployerDto>();
+        CreateMap<UpdateEmployerDto, UpdateEmployerModel>();
     }
 }

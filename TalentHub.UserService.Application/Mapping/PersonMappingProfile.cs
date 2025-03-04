@@ -11,7 +11,11 @@ public class PersonMappingProfile : Profile
     {
         CreateMap<PersonDto, Person>();
         
-        CreateMap<Person, PersonDto>();
+        CreateMap<Person, PersonDto>()
+            .ForMember(d => d.Created, 
+                map => map.MapFrom(src => src.Created.DateTime))
+            .ForMember(d => d.BirthDate, 
+                map => map.MapFrom(src => src.BirthDate.DateTime));
         
         CreateMap<CreatePersonDto, Person>()
             .ForMember(d => d.UserId, map => map.Ignore())
